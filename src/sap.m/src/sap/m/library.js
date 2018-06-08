@@ -72,6 +72,7 @@ sap.ui.define(['jquery.sap.global', 'sap/ui/Device', 'sap/ui/base/DataType',
 			"sap.m.P13nPanelType",
 			"sap.m.PageBackgroundDesign",
 			"sap.m.PanelAccessibleRole",
+			"sap.m.PDFViewerDisplayTypes",
 			"sap.m.PlacementType",
 			"sap.m.PopinDisplay",
 			"sap.m.PopinLayout",
@@ -2379,6 +2380,35 @@ sap.ui.define(['jquery.sap.global', 'sap/ui/Device', 'sap/ui/base/DataType',
 		 * @public
 		 */
 		Region: "Region"
+	};
+
+	/**
+	 * PDFViewer Display Types.
+	 *
+	 * @enum {string}
+	 * @public
+	 */
+	sap.m.PDFViewerDisplayTypes = {
+		/**
+		 * PDFViewer as embedded or link depending on the device.
+		 *
+		 * @public
+		 */
+		Auto: "auto",
+
+		/**
+		 * PDFViewer as embedded.
+		 *
+		 * @public
+		 */
+		Embedded: "embedded",
+
+		/**
+		 * PDFViewer as link.
+		 *
+		 * @public
+		 */
+		Link: "link"
 	};
 
 	/**

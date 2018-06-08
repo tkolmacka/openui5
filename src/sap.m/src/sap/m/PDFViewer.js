@@ -87,7 +87,13 @@ sap.ui.define([
 						/**
 						* Shows or hides the download button.
 						*/
-						showDownloadButton: {type: "boolean", group: "Misc", defaultValue: true}
+						showDownloadButton: {type: "boolean", group: "Misc", defaultValue: true},
+
+						/**
+						 * Display PDFViewer as Embedded (display in embedded mode), Link (display in toolbar with download button)
+						 * or Auto (display PDFViewer depending on the device).
+						 */
+						displayType: {type: "string", group: "Misc", defaultValue: library.PDFViewerDisplayTypes.Auto}
 					},
 					aggregations: {
 						/**
@@ -425,7 +431,7 @@ sap.ui.define([
 		 * @private
 		 */
 		PDFViewer.prototype._shouldRenderPdfContent = function () {
-			return PDFViewerRenderer._isPdfPluginEnabled() && this._bRenderPdfContent && this.getSource() !== null;
+			return PDFViewerRenderer._isPdfPluginEnabled() && this._bRenderPdfContent && this._isSourceValidToDisplay();
 		};
 
 		/**
@@ -458,6 +464,8 @@ sap.ui.define([
 			if (!this._isSourceValidToDisplay()) {
 				jQuery.sap.assert(false, "The PDF file cannot be opened with the given source. Given source: " + this.getSource());
 				return;
+			} else if (!PDFViewerRenderer._isPdfPluginEnabled()) {
+				jQuery.sap.log.warning("The PDF plug-in is not available on this device.");
 			}
 
 			if (this._isEmbeddedModeAllowed()) {
@@ -515,7 +523,39 @@ sap.ui.define([
 		 * @private
 		 */
 		PDFViewer.prototype._isEmbeddedModeAllowed = function () {
-			return Device.system.desktop;
+			return this._isDisplayTypeAuto() ? Device.system.desktop : this._isDisplayTypeEmbedded();
+		};
+
+		/**
+		 * @returns {boolean}
+		 * @private
+		 */
+		PDFViewer.prototype._isDisplayTypeAuto = function () {
+			return this.getDisplayType() === library.PDFViewerDisplayTypes.Auto;
+		};
+
+		/**
+		 * @returns {boolean}
+		 * @private
+		 */
+		PDFViewer.prototype._isDisplayTypeEmbedded = function () {
+			return this.getDisplayType() === library.PDFViewerDisplayTypes.Embedded;
+		};
+
+		/**
+		 * @returns {boolean}
+		 * @private
+		 */
+		PDFViewer.prototype._isDisplayTypeLink = function () {
+			return this.getDisplayType() === library.PDFViewerDisplayTypes.Link;
+		};
+
+		/**
+		 * @returns {boolean}
+		 * @private
+		 */
+		PDFViewer.prototype._isDisplayDownloadButton = function () {
+			return this.getShowDownloadButton() || this._isDisplayTypeLink() || (this._isDisplayTypeAuto() && !this._isEmbeddedModeAllowed());
 		};
 
 		/**
